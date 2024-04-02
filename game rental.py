@@ -168,7 +168,7 @@ def rent_game(username):
                         print(f'Game rented successfully, Remaining balance is {user_acc[username]["balance"]}\n')
                 else:
                     print('Insufficient Funds')
-            elif gamename in game_lib[gamename] and game_lib[gamename]['quantity'] <= 0:
+            elif gamename in game_lib and game_lib[gamename]['quantity'] <= 0:
                 print('Game out of stock')
             else:
                 print('Invalid game selection')
@@ -216,26 +216,63 @@ def top_up(username):
         user_menu(username)
 
 def check_inventory(username):
-    print([user_inventory])
-    print()
+    while True:
+        try:
+            print()
+            if username in user_inventory:
+                print(f'Your inventory: {user_inventory[username]}\n')
+            else:
+                print('Inventory is Empty\n')
 
-    choice = input('Enter y to return to menu: ')
-    if choice.lower() == 'y':
-        user_menu()
+        except ValueError as e:
+            user_menu(uername)
+
+        choice = input('Press y to return to the main menu: ')
+        if choice.lower() == 'y':
+            return user_menu(username)
+        
 def redeem_points(username):
-    print(user_acc[username]["points"])
+    while True:
+        try:
+            print()
+            print('Redeem points\n')
 
-    choice = input('Enter Y to redeem points and N to return to menu: ')
-    if choice.upper() == 'Y':
-        print('r')
-    else:
-        choice.lower() == 'N'
-        user_menu()
-
+            if user_Acc[username]['points'] >= 3:
+                print('You can redeem your points to rent a game')
+                choice = input('Do you want to redeem your points? (Y|N): ')
+                if choice.lower() == 'y':
+                    user_acc[username]['points'] -= 3
+                    print('Points redeemed succefully!\n')
+                    print(game_lib)
+                    gamename = input('Select a game by typing the game name: ')
+                    if gamename in game_lib and game_lib[gamename]['quantity'] > 0:
+                        game_lib[gamename]['quantity'] -= 1
+                        user_invebntory[username] = user_inventory.get(username, []) + [gamename]
+                        print(f'Game "{gamename}" successfully rented\n')
+                        return user_menu(uesrname)
+                    else:
+                        print('Invalid game selection or game is out of stock')
+                        redeem_points(username)
+                elif choice == 'n':
+                    user_menu(username)
+                else:
+                    print('Invalid input. Please Enter Y or N')
+                    redeem_points(username)
+            else:
+                print('Insufficient funds')
+                redeem_points(username)
+        except ValueError as e:
+            usermenu(username)
+        
 def checkpoints(username):
     print(f'Available points: {user_acc[username]["points"]}\n')
-
-    choice = input('Enter y to return to menu: ')
-    if choice.lower() == 'y':
-        user_menu()
+    print('Enter Choice')
+    print('1. Redeem points')
+    print('2. Exit')
+    
+    choice = int(input('\nEnter Choice: '))
+    if choice == 1:
+        user_menu(username)
+    elif choice == 2:
+        return user_menu(usrname)
 main_menu()
