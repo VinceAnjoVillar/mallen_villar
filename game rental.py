@@ -156,7 +156,7 @@ def rent_game(username):
         
             gamename = input('Enter game name to rent: ')
         
-            if gamename in game_lib[gamename] and game_lib[gamename]['quantity'] > 0:
+            if gamename in game_lib and game_lib[gamename]['quantity'] > 0:
                 if user_acc[username]['balance'] >= game_lib[gamename]['cost']:
                     game_lib[gamename]['quantity'] -= 1
                     user_acc[username]['balance'] -= game_lib[gamename]['cost']
