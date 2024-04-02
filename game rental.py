@@ -28,6 +28,8 @@ def main_menu():
         log_in()
     elif choice == 4:
         admin_login()
+    elif choice == 5:
+        quit()
 
 
 def admin_login():
