@@ -121,22 +121,40 @@ def user_menu(username):
         main_menu()
 
 def rent_game(username):
-    print('Rent a gam\n')
-    print([game_lib])
-    print()
+    while True:
+        try:
+            print('Rent a gam\n')
+            print([game_lib])
+            print()
+        
+            gamename = input('Enter game name to rent: ')
+        
+            if gamename in game_lib[gamename] and game_lib[gamename]['quantity'] > 0:
+                if user_acc[username]['balance'] >= game_lib[gamename]['cost']:
+                    game_lib[gamename]['quantity'] -= 1
+                    user_acc[username]['balance'] -= game_lib[gamename]['cost']
+                    user_acc[username]['points'] += 1
+                    if username not in user_inventory:
+                        user_inventory[username] = [gamename]
+                    else:
+                        user_inventory[username].append(gamename)
+                        print(f'Game rented successfully, Remaining balance is {user_acc[username]["balance"]}\n')
+                else:
+                    print('Insufficient Funds')
+            elif gamename in game_lib[gamename] and game_lib[gamename]['quantity'] <= 0:
+                print('Game out of stock')
+            else:
+                print('Game out of stock')
+        except ValueError as e:
+            print('Wrong input\n')
+            user_menu(username)
 
-    gamename = input('Enter game name to rent: ')
-
-    if gamename in game_lib[gamename]['quamtity'] > 0:
-        if user_acc[username]['balance'] > 0:
-            game_lib[gamename]['quantity'] -= 1
-            user_acc[username]['balance'] -= game_lib[gamename]['cost']
-            user_acc[username]['points'] += 1
-        else:
-            print('Insufficient Funds')
-    else:
-        print('Game out of stock')
-
+        choice = input('Enter A to rent again, Enter Y to return to menu: ')
+        if choice.lower() == 'y':
+            user_menu(usenrame)
+        elif choice.lower() != 'a':
+            print('Invalid Input\n')
+            
 def retunr_game():
     print('i')
 
