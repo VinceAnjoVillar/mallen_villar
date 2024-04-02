@@ -16,7 +16,7 @@ def main_menu():
     print('2. Register User')
     print('3. Log In')
     print('4. Admin Log in')
-    print(' 5. Exit')
+    print('5. Exit')
 
     choice = int(input('What would you lke to do? '))
 
@@ -38,22 +38,49 @@ def admin_login():
     if username == admin_user and password == admin_pass:
         admin_menu()
 
-    def admin_menu():
-        print('ADMIN MENU')
-        print('1. Add new games')
-        print('2. Update cost')
-        print('3. Update quantity')
-        print('4. Log out ')
+def admin_menu():
+    print('ADMIN MENU')
+    print('1. Add new games')
+    print('2. Update cost')
+    print('3. Update quantity')
+    print('4. Log out ')
 
-        choice = int(input('What would you like to do? '))
+    choice = int(input('What would you like to do? '))
 
-        if choice == 1:
-            add_game()
+    if choice == 1:
+        add_game()
+    elif choice == 2:
+        game_name = input('Enter game to be updated.')
+        if game_name in game_lib:
+            new_price = int(input('Enter the new price of the game: '))
+            game_lib[game_name]['cost'] = new_price
+            print(f'Price succesfully updated. The new cost of {game_name} is {new_price}')
+        else:
+            print('Game not found in the system.')
+            view_games()  
+    elif choice == 3:
+        game_name = input('Enter game to be updated.')
+        if game_name in game_lib:
+            new_quantity = int(input('Enter the new quantity of the game: '))
+            game_lib[game_name]['quantity'] = new_quantity
+            print(f'Quantity succesfully updated. The quantity of {game_name} is {new_quantity}')
+        else:
+            print('Game not found in the system')
+            view_games()
+    else:
+        admin_menu()
 
-    def add_game():
+def add_game():
+    game_name = input('Enter the game name: ')
+    quantity = int(input('Enter the quantity: '))
+    cost = int(input('Enter the cost of the game: '))
+    game_lib[game_name] = {'quantity' : quantity, 'cost' : cost}
+    print(f'{game_name} added succesfully!')
+
+    choice = input('Enter Y to return to menu: ')
+    if choice.lower == 'y':
+        admin_menu()
         
-
-
 def view_games():
     print([game_lib])
     print()
@@ -144,20 +171,37 @@ def rent_game(username):
             elif gamename in game_lib[gamename] and game_lib[gamename]['quantity'] <= 0:
                 print('Game out of stock')
             else:
-                print('Game out of stock')
+                print('Invalid game selection')
         except ValueError as e:
             print('Wrong input\n')
             user_menu(username)
 
         choice = input('Enter A to rent again, Enter Y to return to menu: ')
         if choice.lower() == 'y':
-            user_menu(usenrame)
+            user_menu(username)
         elif choice.lower() != 'a':
             print('Invalid Input\n')
             
-def retunr_game():
-    print('i')
+def retunr_game(username):
+    while True:
+        try:
+            print('Return a game!')
+            game_name = input('Enter the game you want to return: ')
 
+            if game_name in user_inventory.get(username, []):
+                user_inventory[username].remove(game_name)
+                game_lib[game_name]['quantity'] += 1
+                print(f'{game_name} returned succesfully')
+            else:
+                print('Game not found in user inventory')
+
+        except ValueError as e:
+            user_menu(username)
+
+        choice = input('Press Y to return to menu. ')
+        if choice.lower == 'y':
+            user_menu(username)
+            
 def top_up(username):
     print('TOP UP FUNDS')
 
@@ -169,7 +213,7 @@ def top_up(username):
 
     choice = input('Enter y to return to menu: ')
     if choice.lower() == 'y':
-        user_menu()
+        user_menu(username)
 
 def check_inventory(username):
     print([user_inventory])
